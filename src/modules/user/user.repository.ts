@@ -30,8 +30,8 @@ export class UserRepository {
     }
 
     async SaveProfile(props: CreateProfile){
-        // return await this.user.save(props)
-        return true
+        return await this.user.save(props)
+        // return true
     }
 
     async GetUserProfile(query:any){
