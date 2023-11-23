@@ -1,0 +1,123 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/user": {
+      "get": {
+        "operationId": "UserController_GetUserProfile",
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "example": "fauzan rusdi",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "example": 1,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "example": 10,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "operationId": "UserController_CreateUserProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProfile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "operationId": "UserController_UpdateUserProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/user/upload-photo": {
+      "post": {
+        "operationId": "UserController_UploadPhoto",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/user/photo/{name}": {
+      "get": {
+        "operationId": "UserController_RetrievePhoto",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "WB Digital",
+    "description": "User Profile API description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateProfile": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "rusdifz"
+          },
+          "fullname": {
+            "type": "string",
+            "example": "fauzan rusdi"
+          }
+        },
+        "required": [
+          "username",
+          "fullname"
+        ]
+      }
+    }
+  }
+}
