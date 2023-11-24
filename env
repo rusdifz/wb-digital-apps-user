@@ -1,5 +1,0 @@
-DB_NAME=fdn_dashboard_stag
-DB_USERNAME=dashboard_user_stag
-DB_PASSWORD=Lc3vqNTDjucGgFH
-DB_HOST=fdn-master-data.cluster-cif0p85z2xpg.ap-southeast-1.rds.amazonaws.com
-DB_PORT=5432

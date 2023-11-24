@@ -20,11 +20,22 @@ export class CreateProfile {
     @IsString()
     fullname: string
 
+    @ApiProperty({
+        type: 'string',
+        example: 'kembangkol',
+        required: true
+    })
+    @IsNotEmpty()
+    @IsString()
+    password: string
+
     picture?:any
 }
 
 export class UpdateProfile extends CreateProfile {
-   user_id: number
+    user_id: number
+    email?: string
+    birth_of_date?: string
 }
 
 export class FilterProfile {

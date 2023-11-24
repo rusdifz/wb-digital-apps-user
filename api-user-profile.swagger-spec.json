@@ -1,9 +1,36 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/user": {
+    "/user/{username}": {
       "get": {
         "operationId": "UserController_GetUserProfile",
+        "parameters": [
+          {
+            "name": "username",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaResponseDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "operationId": "UserController_GetUserProfileList",
         "parameters": [
           {
             "name": "search",
@@ -35,10 +62,31 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SchemaResponseList"
+                  }
+                }
+              }
+            }
           }
         }
       },
+      "put": {
+        "operationId": "UserController_UpdateUserProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/user/register": {
       "post": {
         "operationId": "UserController_CreateUserProfile",
         "parameters": [],
@@ -54,15 +102,6 @@
         },
         "responses": {
           "201": {
-            "description": ""
-          }
-        }
-      },
-      "put": {
-        "operationId": "UserController_UpdateUserProfile",
-        "parameters": [],
-        "responses": {
-          "200": {
             "description": ""
           }
         }
@@ -101,6 +140,153 @@
   "servers": [],
   "components": {
     "schemas": {
+      "SchemaMeta": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 200
+          },
+          "msg": {
+            "type": "string",
+            "example": "success"
+          }
+        },
+        "required": [
+          "code",
+          "msg"
+        ]
+      },
+      "IUserProfile": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "number",
+            "example": "1"
+          },
+          "username": {
+            "type": "string",
+            "example": "rusdifz"
+          },
+          "fullname": {
+            "type": "string",
+            "example": "Muhammad Fauzan Rusdi"
+          },
+          "email": {
+            "type": "string",
+            "example": "fauzanrusdi20@gmail.com"
+          },
+          "birth_of_date": {
+            "type": "string",
+            "example": "1998-10-20"
+          },
+          "created_at": {
+            "type": "string",
+            "example": "2023-11-24T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "example": "2023-11-24T00:00:00Z"
+          }
+        },
+        "required": [
+          "user_id",
+          "username",
+          "fullname",
+          "email",
+          "birth_of_date",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "SchemaResponseDetail": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "example": {
+              "code": 200,
+              "msg": "success"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SchemaMeta"
+              }
+            ]
+          },
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IUserProfile"
+              }
+            ]
+          }
+        },
+        "required": [
+          "meta",
+          "data"
+        ]
+      },
+      "SchemaPagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "total": {
+            "type": "number",
+            "example": 5
+          },
+          "total_page": {
+            "type": "number",
+            "example": 5
+          }
+        },
+        "required": [
+          "page",
+          "total",
+          "total_page"
+        ]
+      },
+      "SchemaResponseList": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "example": {
+              "code": 200,
+              "msg": "success"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SchemaMeta"
+              }
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pagination": {
+            "example": {
+              "page": 1,
+              "total": 5,
+              "total_page": 5
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SchemaPagination"
+              }
+            ]
+          }
+        },
+        "required": [
+          "meta",
+          "data",
+          "pagination"
+        ]
+      },
       "CreateProfile": {
         "type": "object",
         "properties": {
@@ -111,11 +297,16 @@
           "fullname": {
             "type": "string",
             "example": "fauzan rusdi"
+          },
+          "password": {
+            "type": "string",
+            "example": "kembangkol"
           }
         },
         "required": [
           "username",
-          "fullname"
+          "fullname",
+          "password"
         ]
       }
     }

@@ -3,7 +3,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { IUserProfile } from 'src/dto/response/user.interface';
 import { Repository, Like } from "typeorm";
 
-import { CreateProfile } from '../../dto/request/user.dto';
 import { UserProfile } from '../../entities';
 // import _, { map } from 'underscore'
 
@@ -29,43 +28,81 @@ export class UserRepository {
         return false
     }
 
-    async SaveProfile(props: CreateProfile){
+    async SaveProfile(props: any){
         return await this.user.save(props)
-        // return true
     }
 
-    async GetUserProfile(query:any){
-    
-        const [data, count] = await Promise.all([
-            this.user.find({
-                where: [
-                    {
-                        username: Like(query.search)
-                    },
-                    {
-                        fullname: Like(query.search)
-                    }
-                ],
-                take: query.limit, 
-                skip: query.page
-            }),
-            this.user.count({
-                where: [ { username: Like(query.search) }, { fullname: Like(query.search) } ]
-            })
-        ])
+    async GetUserProfile(username: string){
+        
+        return await this.user.findOne({
+            select: {
+                user_id: true, 
+                username: true, 
+                fullname: true, 
+                email: true, 
+                birth_of_date: true,
+                profile_picture: true,
+                created_at: true, 
+                updated_at: true
+            },
+            where: {
+                username: username
+            }
+        })
 
-        // const [data, count] = await Promise.all([
-        //     [{
-        //         user_id: 1,
-        //         username: "rusdifz",
-        //         fullname: "fauzan rusdi",
-        //         email: "fauzanrusdi20@gmail.com",
-        //         birth_of_date: "20122",
-        //         created_at: "2022",
-        //         updated_at: "string"
-        //     }],
-        //     1
-        // ])
+    }
+
+    async GetUserProfileList(query:any){
+        
+        let data:any, count:any
+
+        if(query.search){
+            [data, count] = await Promise.all([
+                this.user.find({
+                    select: {
+                        user_id: true, 
+                        username: true, 
+                        fullname: true, 
+                        email: true, 
+                        birth_of_date: true,
+                        profile_picture: true,
+                        created_at: true, 
+                        updated_at: true
+                    },
+                    where: [
+                        {
+                            username: Like(query.search)
+                        },
+                        {
+                            fullname: Like(query.search)
+                        }
+                    ],
+                    take: query.limit, 
+                    skip: query.page
+                }),
+                this.user.count({
+                    where: [ { username: Like(query.search) }, { fullname: Like(query.search) } ]
+                })
+            ])
+        }else{
+            [data, count] = await Promise.all([
+                this.user.find({
+                    select: {
+                        user_id: true, 
+                        username: true, 
+                        fullname: true, 
+                        email: true, 
+                        birth_of_date: true,
+                        profile_picture: true,
+                        created_at: true, 
+                        updated_at: true
+                    },
+                    take: query.limit, 
+                    skip: query.page
+                }),
+                this.user.count()
+            ])
+        }
 
         return {data, count}
 

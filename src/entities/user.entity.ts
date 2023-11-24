@@ -12,6 +12,8 @@ export class UserProfile {
     email: string
     @Column({ type: "varchar", length: 255, default: null})
     birth_of_date: string
+    @Column({ type: "varchar", length: 255, default: null})
+    profile_picture: string
     @CreateDateColumn({ type: "timestamp" })
     created_at: Date
     @CreateDateColumn({ type: "timestamp", default: null })

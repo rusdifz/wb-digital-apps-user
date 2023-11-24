@@ -1,6 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { existsSync } from 'fs';
-import { IUserProfile } from 'src/dto/response/user.interface';
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken'
+
+import { IUserProfile } from '../../dto/response/user.interface';
 
 import { CreateProfile, FilterProfile, UpdateProfile } from '../../dto/request/user.dto';
 
@@ -13,19 +16,36 @@ export class UserService {
         private readonly userRepository: UserRepository
     ){}
 
+    async GetUserProfile(username: string): Promise<IUserProfile>{
 
-    async GetUserProfile(props:FilterProfile): Promise<{data:IUserProfile[], count: number}>{
+        const user:any = await this.userRepository.GetUserProfile(username)
+
+        if(user){
+            user.profile_picture = "http://localhost:3000/user/photo"+user.profile_picture
+        }
+
+        return user
+       
+    }
+
+    async GetUserProfileList(props:FilterProfile): Promise<{data:IUserProfile[], count: number}>{
 
         const page = props.page ? parseInt(props.page) : 1
         const limit = props.limit ? parseInt(props.limit) : 10
 
-        let users:any = await this.userRepository.GetUserProfile({page, limit, search: props.search})
+        let users:any = await this.userRepository.GetUserProfileList({page, limit, search: props.search ? props.search : null})
+
+        if(users.data.length > 0){
+            users.data = users.data.map(dt=>{
+                dt.profile_picture = "http://localhost:3000/user/photo"+dt.profile_picture
+                return dt
+            })
+        }
 
         return users
     }
 
-    async CreateUserProfile(props: CreateProfile): Promise<IUserProfile>{
-        console.log('user', props);
+    async CreateUserProfile(props: CreateProfile): Promise<{user: IUserProfile, token: string}>{
         
         const cekUsername = await this.userRepository.CekUsername(props.username)
 
@@ -33,16 +53,35 @@ export class UserService {
             throw new HttpException('username already exist', HttpStatus.BAD_REQUEST)
         }
 
-        const saveData:any = await this.userRepository.SaveProfile(props)
+        const payload:any = {
+            ...props,
+            password: await bcrypt.hash(props.password, 10)
+        }
 
-        if(saveData) return saveData
+        const saveData = await this.userRepository.SaveProfile(payload)
 
+        if(saveData){
+            delete payload.password
+
+            const token = jwt.sign(payload, process.env.JWT_KEY)
+
+            return { user: payload, token: token }
+        }
+        
         throw new HttpException('failed register new user', HttpStatus.BAD_REQUEST)
 
     }
 
-    async UpdateUserProfile(props: UpdateProfile): Promise<IUserProfile>{
-        return
+    async UpdateUserProfile(props: UpdateProfile): Promise<Partial<IUserProfile>>{
+
+        const saveData = await this.userRepository.SaveProfile(props)
+
+        if(saveData){
+           return props
+        }
+        
+        throw new HttpException('failed update user', HttpStatus.BAD_REQUEST)
+
     }
 
     async RetrievePhoto(name:string){

@@ -1,13 +1,15 @@
 import { Controller, Get, Post, Query, UseInterceptors, UseGuards, Headers, Body, UploadedFile, Param, Delete, HttpException, HttpStatus, Put, Res } from "@nestjs/common";
 import { FileInterceptor } from '@nestjs/platform-express'
 import type { Response } from 'express';
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiResponse, ApiOkResponse } from "@nestjs/swagger";
 
 import { HeaderGuard } from "../../utils/middleware/guard/header.guard";
 import { CreateProfile, FilterProfile } from "../../dto/request/user.dto";
+import { IUserProfile } from '../../dto/response/user.interface';
+import { SchemaNotFoundDetail, SchemaNotFoundList, SchemaSuccessDetail, SchemaSuccessList } from "src/dto/response/schema.dto";
 import { FilterImage, StorageImage } from "../../utils/helpers/file-upload.helper";
 
-import { ResponseList, ResponseInput } from "../../utils/middleware/interceptor/response/success";
+import { ResponseList, ResponseInput, ResponseDetail } from "../../utils/middleware/interceptor/response/success";
 
 import { UserService } from "./user.service";
 
@@ -18,16 +20,26 @@ export class UserController {
     ){}
     
     @UseGuards(HeaderGuard)
+    @UseInterceptors(ResponseDetail)
+    @Get('/:username')
+    @ApiOkResponse({ type: SchemaSuccessDetail })
+    @ApiResponse({ status: 404,  type: SchemaNotFoundDetail })
+    async GetUserProfile(@Param('username') username: string){
+        return await this.service.GetUserProfile(username)
+    }
+
+    @UseGuards(HeaderGuard)
     @UseInterceptors(ResponseList)
     @Get('')
-    // @ApiResponse({ status: 200, description: "result success"})
-    async GetUserProfile(@Query() query: FilterProfile, @Headers() headers:any){
-        return await this.service.GetUserProfile(query)
+    @ApiOkResponse({ type: SchemaSuccessList })
+    @ApiResponse({ status: 204,  type: SchemaNotFoundList })
+    async GetUserProfileList(@Query() query: FilterProfile, @Headers() headers:any){
+        return await this.service.GetUserProfileList(query)
     }
     
     @UseGuards(HeaderGuard)
     @UseInterceptors(ResponseInput)
-    @Post('')
+    @Post('register')
     async CreateUserProfile(@Body() body: CreateProfile, @Headers() headers:any){
         return await this.service.CreateUserProfile(body)
     }
@@ -36,7 +48,7 @@ export class UserController {
     @UseInterceptors(ResponseInput)
     @Put('')
     async UpdateUserProfile(@Body() body:any, @Headers() headers:any){
-
+        return await this.service.UpdateUserProfile(body)
     }   
 
     @UseGuards(HeaderGuard)
