@@ -45,5 +45,6 @@ $ http://localhost:3000/doc
 
 ```bash
 # access
-$ 
+$ run API Upload Photo
+$ After running upload photo, run endpoint register (for the profile_picture field taken from the upload photo field filename response)
 ```
