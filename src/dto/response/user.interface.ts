@@ -9,6 +9,8 @@ export class IUserProfile {
     fullname: string
     @ApiProperty({ example: 'fauzanrusdi20@gmail.com' })
     email: string
+    @ApiProperty({ example: '0dece321-0b61-4bd5-9a43-be004a6da3ef-wb-digital.jpeg' })
+    profile_picture: string
     password?: string
     @ApiProperty({ example: '1998-10-20' })
     birth_of_date: string

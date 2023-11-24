@@ -29,7 +29,14 @@ export class CreateProfile {
     @IsString()
     password: string
 
-    picture?:any
+    @ApiProperty({
+        type: 'string',
+        example: '0dece321-0b61-4bd5-9a43-be004a6da3ef-wb-digital.jpeg',
+        required: true
+    })
+    @IsOptional()
+    @IsString()
+    profile_picture?:any
 }
 
 export class UpdateProfile extends CreateProfile {

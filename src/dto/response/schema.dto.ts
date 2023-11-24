@@ -54,6 +54,14 @@ export class SchemaNotFoundList{
 
 }
 
+export class SchemaInput{
+    @ApiProperty({ example: { code: 201, msg: "Data Not Found" } })
+    meta: MetaCode
+
+    @ApiProperty({ example: IUserProfile })
+    data: IUserProfile
+}
+
 export class SchemaError {
     @ApiProperty({ example: { code: 400, msg: "Bad Request" } })
     meta: MetaCode

@@ -40,3 +40,10 @@ $ npm run test:cov
 # access
 $ http://localhost:3000/doc
 ```
+
+## How To Register or Update Profile
+
+```bash
+# access
+$ 
+```

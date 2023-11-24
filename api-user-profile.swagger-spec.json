@@ -12,6 +12,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "api-key",
+            "in": "header",
+            "description": "Custom header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -20,7 +28,27 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SchemaResponseDetail"
+                  "$ref": "#/components/schemas/SchemaSuccessDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaNotFoundDetail"
                 }
               }
             }
@@ -58,6 +86,14 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "name": "api-key",
+            "in": "header",
+            "description": "Custom header",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -66,10 +102,27 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SchemaResponseList"
-                  }
+                  "$ref": "#/components/schemas/SchemaSuccessList"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaNotFoundList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaError"
                 }
               }
             }
@@ -78,10 +131,36 @@
       },
       "put": {
         "operationId": "UserController_UpdateUserProfile",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "api-key",
+            "in": "header",
+            "description": "Custom header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
-          "200": {
-            "description": ""
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaInput"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaError"
+                }
+              }
+            }
           }
         }
       }
@@ -89,7 +168,16 @@
     "/user/register": {
       "post": {
         "operationId": "UserController_CreateUserProfile",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "api-key",
+            "in": "header",
+            "description": "Custom header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -102,7 +190,24 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaInput"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaError"
+                }
+              }
+            }
           }
         }
       }
@@ -110,7 +215,33 @@
     "/user/upload-photo": {
       "post": {
         "operationId": "UserController_UploadPhoto",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "api-key",
+            "in": "header",
+            "description": "Custom header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "picture": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "$ref": "#/components/schemas/"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": ""
@@ -124,7 +255,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Buffer"
+                }
+              }
+            }
           }
         }
       }
@@ -140,22 +278,9 @@
   "servers": [],
   "components": {
     "schemas": {
-      "SchemaMeta": {
+      "MetaCode": {
         "type": "object",
-        "properties": {
-          "code": {
-            "type": "number",
-            "example": 200
-          },
-          "msg": {
-            "type": "string",
-            "example": "success"
-          }
-        },
-        "required": [
-          "code",
-          "msg"
-        ]
+        "properties": {}
       },
       "IUserProfile": {
         "type": "object",
@@ -176,6 +301,10 @@
             "type": "string",
             "example": "fauzanrusdi20@gmail.com"
           },
+          "profile_picture": {
+            "type": "string",
+            "example": "0dece321-0b61-4bd5-9a43-be004a6da3ef-wb-digital.jpeg"
+          },
           "birth_of_date": {
             "type": "string",
             "example": "1998-10-20"
@@ -194,12 +323,13 @@
           "username",
           "fullname",
           "email",
+          "profile_picture",
           "birth_of_date",
           "created_at",
           "updated_at"
         ]
       },
-      "SchemaResponseDetail": {
+      "SchemaSuccessDetail": {
         "type": "object",
         "properties": {
           "meta": {
@@ -209,7 +339,7 @@
             },
             "allOf": [
               {
-                "$ref": "#/components/schemas/SchemaMeta"
+                "$ref": "#/components/schemas/MetaCode"
               }
             ]
           },
@@ -226,7 +356,50 @@
           "data"
         ]
       },
-      "SchemaPagination": {
+      "SchemaError": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "example": {
+              "code": 400,
+              "msg": "Bad Request"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MetaCode"
+              }
+            ]
+          }
+        },
+        "required": [
+          "meta"
+        ]
+      },
+      "SchemaNotFoundDetail": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "example": {
+              "code": 404,
+              "msg": "Data Not Found"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MetaCode"
+              }
+            ]
+          },
+          "data": {
+            "type": "object",
+            "example": null
+          }
+        },
+        "required": [
+          "meta",
+          "data"
+        ]
+      },
+      "Pagination": {
         "type": "object",
         "properties": {
           "page": {
@@ -248,7 +421,7 @@
           "total_page"
         ]
       },
-      "SchemaResponseList": {
+      "SchemaSuccessList": {
         "type": "object",
         "properties": {
           "meta": {
@@ -258,25 +431,58 @@
             },
             "allOf": [
               {
-                "$ref": "#/components/schemas/SchemaMeta"
+                "$ref": "#/components/schemas/MetaCode"
               }
             ]
           },
           "data": {
+            "example": [
+              null
+            ],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "pagination": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Pagination"
+              }
+            ]
+          }
+        },
+        "required": [
+          "meta",
+          "data",
+          "pagination"
+        ]
+      },
+      "SchemaNotFoundList": {
+        "type": "object",
+        "properties": {
+          "meta": {
             "example": {
-              "page": 1,
-              "total": 5,
-              "total_page": 5
+              "code": 204,
+              "msg": "Data Not Found"
             },
             "allOf": [
               {
-                "$ref": "#/components/schemas/SchemaPagination"
+                "$ref": "#/components/schemas/MetaCode"
+              }
+            ]
+          },
+          "data": {
+            "example": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pagination": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Pagination"
               }
             ]
           }
@@ -301,13 +507,49 @@
           "password": {
             "type": "string",
             "example": "kembangkol"
+          },
+          "profile_picture": {
+            "type": "string",
+            "example": "0dece321-0b61-4bd5-9a43-be004a6da3ef-wb-digital.jpeg"
           }
         },
         "required": [
           "username",
           "fullname",
-          "password"
+          "password",
+          "profile_picture"
         ]
+      },
+      "SchemaInput": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "example": {
+              "code": 201,
+              "msg": "Data Not Found"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MetaCode"
+              }
+            ]
+          },
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IUserProfile"
+              }
+            ]
+          }
+        },
+        "required": [
+          "meta",
+          "data"
+        ]
+      },
+      "Buffer": {
+        "type": "object",
+        "properties": {}
       }
     }
   }
